@@ -1,7 +1,11 @@
+import Header from "components/header";
+
 function App() {
   return (
-    <button className='btn'>Click me!</button>
-  )
+    <>
+      <Header />
+    </>
+  );
 }
 
-export default App
+export default App;
