@@ -1,28 +1,63 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import tseslint from 'typescript-eslint'
+import pluginReact from "eslint-plugin-react";
 
-export default tseslint.config(
-  { ignores: ['dist'] },
+import pluginJs from "@eslint/js";
+import perfectionist from 'eslint-plugin-perfectionist'
+import globals from "globals";
+import tseslint from "typescript-eslint";
+
+export default [
+  pluginJs.configs.recommended,
+  ...tseslint.configs.recommended,
+  pluginReact.configs.flat.recommended,
   {
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    files: ['**/*.{ts,tsx}'],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-    },
+    ignores: [
+      "vite.config.ts",
+      "mock",
+      "src/components/Markdown",
+      "src/components/Typer.tsx",
+      "src/**/styles.ts",
+    ]
+  },
+  {
+    files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"],
     plugins: {
-      'react-hooks': reactHooks,
-      'react-refresh': reactRefresh,
+      perfectionist,
     },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-refresh/only-export-components': [
+      'indent': ['warn', 2],
+      'react/prop-types': 'off',
+      'react/react-in-jsx-scope': 'off',
+      'perfectionist/sort-imports': [
         'warn',
-        { allowConstantExport: true },
+        {
+          groups: [
+            'type',
+            'react',
+            ['builtin', 'external'],
+            'internal-type',
+            'internal',
+            ['parent-type', 'sibling-type', 'index-type'],
+            ['parent', 'sibling', 'index'],
+            'side-effect',
+            'style',
+            'object',
+            'unknown',
+          ],
+          customGroups: {
+            value: {
+              react: ['react', 'react-*'],
+            },
+            type: {
+              react: 'react',
+            },
+          },
+          newlinesBetween: 'always',
+        },
       ],
+      'react/no-unknown-property': 'warn',
     },
   },
-)
+  {
+    languageOptions: { globals: globals.browser },
+  },
+];
